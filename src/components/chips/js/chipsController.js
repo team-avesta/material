@@ -353,7 +353,7 @@ MdChipsCtrl.prototype.chipKeydown = function (event) {
       event.preventDefault();
       // By default, allow selection of -1 which will focus the input; if we're readonly, don't go
       // below 0
-      if (this.selectedChip < 0 || (this.readonly && this.selectedChip == 0)) {
+      if (this.selectedChip < 0 || (this.readonly && this.selectedChip === 0)) {
         this.selectedChip = this.items.length;
       }
       if (this.items.length) this.selectAndFocusChipSafe(this.selectedChip - 1);
@@ -379,7 +379,7 @@ MdChipsCtrl.prototype.chipKeydown = function (event) {
 MdChipsCtrl.prototype.getPlaceholder = function() {
   // Allow `secondary-placeholder` to be blank.
   var useSecondary = (this.items && this.items.length &&
-      (this.secondaryPlaceholder == '' || this.secondaryPlaceholder));
+      (this.secondaryPlaceholder === '' || this.secondaryPlaceholder));
   return useSecondary ? this.secondaryPlaceholder : this.placeholder;
 };
 
@@ -425,8 +425,8 @@ MdChipsCtrl.prototype.resetSelectedChip = function() {
  */
 MdChipsCtrl.prototype.getAdjacentChipIndex = function(index) {
   var len = this.items.length - 1;
-  return (len == 0) ? -1 :
-      (index == len) ? index -1 : index;
+  return (len === 0) ? -1 :
+      (index === len) ? index -1 : index;
 };
 
 /**
@@ -520,7 +520,7 @@ MdChipsCtrl.prototype.useOnSelectExpression = function() {
  * Gets the input buffer. The input buffer can be the model bound to the
  * default input item {@code this.chipBuffer}, the {@code selectedItem}
  * model of an {@code md-autocomplete}, or, through some magic, the model
- * bound to any inpput or text area element found within a
+ * bound to any input or text area element found within a
  * {@code md-input-container} element.
  * @return {string}
  */
@@ -660,15 +660,21 @@ MdChipsCtrl.prototype.selectChip = function(index) {
  */
 MdChipsCtrl.prototype.selectAndFocusChip = function(index) {
   this.selectChip(index);
-  if (index != -1) {
+  if (index !== -1) {
     this.focusChip(index);
   }
 };
 
 /**
  * Call `focus()` on the chip at `index`
+ *
+ * @param index chip to call focus() on
+ * @param event optional click event if stopping propagation is needed
  */
-MdChipsCtrl.prototype.focusChip = function(index) {
+MdChipsCtrl.prototype.focusChip = function(index, event) {
+  if (event) {
+    event.stopPropagation();
+  }
   var chipContent = this.$element[0].querySelector('md-chip[index="' + index + '"] .md-chip-content');
 
   this.ariaTabIndex = index;
@@ -726,7 +732,7 @@ MdChipsCtrl.prototype.configureUserInput = function(inputElement) {
   // Find the NgModelCtrl for the input element
   var ngModelCtrl = inputElement.controller('ngModel');
   // `.controller` will look in the parent as well.
-  if (ngModelCtrl != this.ngModelCtrl) {
+  if (ngModelCtrl !== this.ngModelCtrl) {
     this.userInputNgModelCtrl = ngModelCtrl;
   }
 
